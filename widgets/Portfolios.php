@@ -28,7 +28,7 @@ class Portfolios extends \Elementor\Widget_Base {
 	}
 
 	public function get_icon() {
-		return 'eicon-testimonial-carousel';
+		return ' eicon-posts-grid';
 	}
 
 	public function get_categories() {

@@ -1,1 +1,0 @@
-<div id="hovard-search-result" data-noresult="<?php esc_attr_e('No Results Found', 'hovard-core'); ?>"> </div>

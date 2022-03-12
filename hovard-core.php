@@ -145,11 +145,7 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 
 			// Extra functions
 			require_once __DIR__ . '/inc/extra.php';
-			// Custom post types
-			//require_once __DIR__ . '/post-type/hovard_mega_menu.pt.php';
 			require_once __DIR__ . '/post-type/portfolio.pt.php';
-			require_once __DIR__ . '/post-type/video.pt.php';
-			require_once __DIR__ . '/post-type/changelog.pt.php';
 			require_once __DIR__ . '/post-type/acf_meta.php';
 			// Gutenberg Blocks
 			require_once __DIR__ . '/blocks/_blocks.php';
@@ -352,15 +348,7 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 		 */
 		public function enqueue_widget_styles() {
 			wp_register_style( 'ionicons', 'https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css', '', '2.0.1' );
-			wp_register_style( 'prism', plugins_url( 'assets/vendors/prism/prism.min.css', __FILE__ ) );
-			wp_register_style( 'nice-select', plugins_url( 'assets/vendors/niceselectpicker/nice-select.css', __FILE__ ) );
-			wp_register_style( 'simple-line-icon', plugins_url( 'assets/vendors/simple-line-icon/simple-line-icons.css', __FILE__ ) );
-			wp_register_style( 'animated', plugins_url( 'assets/vendors/slick/animated.css', __FILE__ ) );
-			wp_register_style( 'slick', plugins_url( 'assets/vendors/slick/slick.css', __FILE__ ) );
-			wp_register_style( 'slick-theme', plugins_url( 'assets/vendors/slick/slick-theme.css', __FILE__ ) );
 			wp_register_style( 'elegant-icon', plugins_url( 'assets/vendors/elegant-icon/style.css', __FILE__ ) );
-			wp_register_style( 'video-js', plugins_url( 'assets/vendors/video/videojs.min.css', __FILE__ ) );
-			wp_register_style( 'video-js-theaterMode', plugins_url( 'assets/vendors/video/videojs.theaterMode.css', __FILE__ ) );
 		}
 
 		/**
@@ -372,10 +360,9 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 		 */
 		public function register_widget_scripts() {
 
+			wp_register_script( 'my_loadmore', plugins_url( 'assets/js/myloadmore.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
 			wp_register_script( 'slick', plugins_url( 'assets/vendors/slick/slick.min.js', __FILE__ ), array( 'jquery' ), '1.9.0', true );
 			wp_register_script( 'wow', plugins_url( 'assets/vendors/wow/wow.min.js', __FILE__ ), array( 'jquery' ), '1.9.0', true );
-			wp_register_script( 'artplayer', plugins_url( 'assets/vendors/video/artplayer.js', __FILE__ ), array( 'jquery' ), '3.5.26', true );
-			wp_register_script( 'video-js', plugins_url( 'assets/vendors/video/video.min.js', __FILE__ ), array( 'jquery' ), '7.6.0', true );
 		}
 
 		public function enqueue_elementor_editor_styles() {
@@ -385,9 +372,14 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 		public function enqueue_scripts() {
 			wp_deregister_style( 'elementor-animations' );
 			wp_deregister_style( 'e-animations' );
-			if ( is_post_type_archive( 'topic' ) ) {
-				wp_deregister_style( 'bbp-default' );
-			}
+
+			global $wp_query;
+
+			wp_localize_script( 'my_loadmore', 'hovard_loadmore_params', array(
+				'ajaxurl' => admin_url('admin-ajax.php'),
+			) );
+
+			wp_enqueue_script( 'my_loadmore' );
 		}
 
 		/*public function register_admin_styles() {
@@ -464,13 +456,13 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 		 * @access private
 		 */
 		private function include_widgets() {
-			require_once __DIR__ . '/widgets/Hero.php';
 			require_once __DIR__ . '/widgets/Hovard_Title.php';
 			require_once __DIR__ . '/widgets/Tabs.php';
 			require_once __DIR__ . '/widgets/Testimonial.php';
 			require_once __DIR__ . '/widgets/Section_Title.php';
 			require_once __DIR__ . '/widgets/Resume_History.php';
 			require_once __DIR__ . '/widgets/Portfolios.php';
+			require_once __DIR__ . '/widgets/Article.php';
 		}
 
 		/**
@@ -489,6 +481,7 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 				'Testimonial',
 				'Resume_History',
 				'Portfolios',
+				'Article',
 			];
 
 
@@ -528,3 +521,56 @@ function hovard_admin_cpt_script( $hook ) {
 }
 
 add_action( 'admin_enqueue_scripts', 'hovard_admin_cpt_script', 10, 1 );
+
+
+
+function hovard_loadmore_ajax_handler(){
+
+            $post_args = new WP_Query( array(
+	            'post_type'      => 'post',
+	            'order'          => 'DESC',
+	            'posts_per_page' => -1,
+            ) );
+
+            while ( $post_args->have_posts() ): $post_args->the_post();
+
+	            $categories = get_the_category(get_the_ID());
+	            $category_list = join( ', ', wp_list_pluck( $categories, 'name' ) );
+            ?>
+			<!-- Blog item -->
+			<div <?php echo post_class("col-span-1 relative z-10 pt-5"); ?> >
+
+				<a href="<?php get_the_permalink(); ?>"
+					class="hbcat-list absolute top-0 left-6 inline-block bg-oceangreen font-ibmplexmono font-medium text-para3 text-white rounded-[3px] py-1.5 px-2.5" >
+                    <?php echo wp_kses_post( $category_list ); ?>
+                </a>
+				<a @click.prevent="page = 'blog-single'" href=" <?php the_permalink(); ?>">
+                    <?php the_post_thumbnail( 'hovard-box', [ "class" => "rounded-md" ] ); ?>
+				</a>
+				<div class="bg-white shadow-custom3 rounded-md mx-5 -mt-12.5 relative z-10 px-7.5 py-6">
+
+					<ul class="flex gap-6">
+						<li class="flex items-center font-ibmplexmono font-normal text-para4 text-emperor">
+							<a href="#"><i class="ti-user text-sienna mr-2.5"></i><?php the_author_link(); ?></a>
+						</li>
+						<li class="flex items-center font-ibmplexmono font-normal text-para4 text-emperor"><i class="ti-calendar text-sienna mr-2.5"></i> <?php echo esc_html( get_the_date('F j, Y') ); ?></li>
+					</ul>
+
+					<h4 class="article-title font-rufina font-bold text-title10 text-shaft duration-300 ease-in-out mt-2.5 hover:text-oceangreen">
+						<a @click.prevent="page = 'blog-single'" href="<?php the_permalink(); ?>"> <?php the_title(); ?> </a>
+					</h4>
+
+				</div>
+			</div>
+
+            <?php
+            endwhile;
+	die;
+}
+add_action('wp_ajax_loadmore', 'hovard_loadmore_ajax_handler');
+add_action('wp_ajax_nopriv_loadmore', 'hovard_loadmore_ajax_handler');
+
+
+
+
+
