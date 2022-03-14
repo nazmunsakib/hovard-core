@@ -172,18 +172,6 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 			require_once __DIR__ . '/shortcodes/tags.php';
 		}
 
-		function mega_menu_include() {
-			// Mega Menu
-			$mega_menus      = new WP_Query( array(
-				'post_type'      => 'megamenu',
-				'posts_per_page' => - 1,
-			) );
-			$mega_menu_count = $mega_menus->post_count;
-			if ( $mega_menu_count > 0 && has_nav_menu( 'main_menu' ) ) {
-				require plugin_dir_path( __FILE__ ) . '/inc/mega_menu.php';
-			}
-		}
-
 		/**
 		 * Init Hooks
 		 *
@@ -373,13 +361,10 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 			wp_deregister_style( 'elementor-animations' );
 			wp_deregister_style( 'e-animations' );
 
-			global $wp_query;
-
 			wp_localize_script( 'my_loadmore', 'hovard_loadmore_params', array(
 				'ajaxurl' => admin_url('admin-ajax.php'),
+				'current_page' => get_query_var( 'paged' ) ? get_query_var('paged') : 1,
 			) );
-
-			wp_enqueue_script( 'my_loadmore' );
 		}
 
 		/*public function register_admin_styles() {
@@ -526,17 +511,18 @@ add_action( 'admin_enqueue_scripts', 'hovard_admin_cpt_script', 10, 1 );
 
 function hovard_loadmore_ajax_handler(){
 
-            $post_args = new WP_Query( array(
-	            'post_type'      => 'post',
-	            'order'          => 'DESC',
-	            'posts_per_page' => -1,
+            $posts_args = new WP_Query( array(
+                'post_type'      => 'post',
+                'order'          => 'DESC',
+                'posts_per_page' => -1,
+                'paged' =>  max( 1, get_query_var('paged') ) + 1,
             ) );
 
-            while ( $post_args->have_posts() ): $post_args->the_post();
-
+            while ( $posts_args->have_posts() ): $posts_args->the_post();
 	            $categories = get_the_category(get_the_ID());
 	            $category_list = join( ', ', wp_list_pluck( $categories, 'name' ) );
             ?>
+
 			<!-- Blog item -->
 			<div <?php echo post_class("col-span-1 relative z-10 pt-5"); ?> >
 
@@ -565,7 +551,17 @@ function hovard_loadmore_ajax_handler(){
 
             <?php
             endwhile;
-	die;
+			if (  $posts_args->max_num_pages > 1 ):
+			?>
+
+			<div class="col-span-2 text-center pt-2.5">
+				<a class="loade_more_btn font-ibmplexmono font-medium text-subtitle2 text-white bg-oceangreen rounded-sm2 inline-block py-3.5 px-13.5" href="#">Load More</a>
+			</div>
+
+			<?php
+			endif;
+			die;
+
 }
 add_action('wp_ajax_loadmore', 'hovard_loadmore_ajax_handler');
 add_action('wp_ajax_nopriv_loadmore', 'hovard_loadmore_ajax_handler');

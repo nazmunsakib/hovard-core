@@ -39,7 +39,7 @@ class Portfolio {
 			'singular_name'         => esc_html_x( 'Portfolio', 'Post Type Singular Name', 'hovard-core' ),
 			'add_new'               => esc_html__( 'Add New', 'hovard-core' ),
 			'add_new_item'          => esc_html__( 'Add New', 'hovard-core' ) . $this->singular_name,
-			'edit_item'             => esc_html__( 'Edit', 'hovard-core' ) . $this->singular_name,
+			'edit_item'             => esc_html__( 'Edit ', 'hovard-core' ) . $this->singular_name,
 			'new_item'              => esc_html__( 'New ', 'hovard-core' ) . $this->singular_name,
 			'all_items'             => esc_html__( 'All ', 'hovard-core' )  . $this->name,
 			'view_item'             => esc_html__( 'View ', 'hovard-core' ) . $this->singular_name,

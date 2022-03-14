@@ -67,7 +67,7 @@
                             >
                                 <div class="text-center">
                                     <a href="#"><i class="ti-search inline-block bg-sienna text-white text-title9 rounded-sm border-4 border-sandrift px-4 py-3 mb-7.5"></i></a>
-                                    <h4 class="font-rufina font-bold text-title4 text-rosewhite mb-2.5"><a @click.prevent="page = 'portfolio-single'" href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
+                                    <h4 class="font-rufina font-bold text-title4 text-rosewhite mb-2.5"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
                                     <p class="font-ibmplexmono font-normal text-para3 text-rosewhite"><?php echo esc_attr( ucwords( $terms_name ) ); ?></p>
                                 </div>
                             </div>
