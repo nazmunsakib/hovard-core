@@ -1,4 +1,5 @@
 <?php
+
 namespace HovardCore\Widgets;
 
 use Elementor\Widget_Base;
@@ -36,12 +37,12 @@ class Resume_History extends \Elementor\Widget_Base {
 	}
 
 	public function get_keywords() {
-		return ['resume', 'history', 'timeline'];
+		return [ 'resume', 'history', 'timeline' ];
 	}
 
 	protected function register_controls() {
 
-		// ------------------------------ Testimonials 01 ------------------------------ //
+		// ------------------------------ Resume History ------------------------------ //
 		$this->start_controls_section(
 			'resume_sec', [
 				'label' => __( 'Resume History', 'hovard-core' ),
@@ -52,26 +53,26 @@ class Resume_History extends \Elementor\Widget_Base {
 
 		$repeater->add_control(
 			'institution', [
-				'label' => __( 'Company / Institution', 'hovard-core' ),
-				'type' => \Elementor\Controls_Manager::TEXT,
+				'label'       => __( 'Company / Institution', 'hovard-core' ),
+				'type'        => \Elementor\Controls_Manager::TEXT,
 				'label_block' => true,
 			]
 		);
 
 		$repeater->add_control(
 			'st_en_year', [
-				'label' => __( 'Start and end Year', 'hovard-core' ),
-				'type' => \Elementor\Controls_Manager::TEXT,
-				'default' => __( '2018 - 2021' , 'hovard-core' ),
+				'label'       => __( 'Start and end Year', 'hovard-core' ),
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'default'     => __( '2018 - 2021', 'hovard-core' ),
 				'label_block' => true,
 			]
 		);
 
 		$repeater->add_control(
 			'designation', [
-				'label' => __( 'Course / Designation', 'hovard-core' ),
-				'type' => \Elementor\Controls_Manager::TEXT,
-				'default' => __( 'Software Developer' , 'hovard-core' ),
+				'label'       => __( 'Course / Designation', 'hovard-core' ),
+				'type'        => \Elementor\Controls_Manager::TEXT,
+				'default'     => __( 'Software Developer', 'hovard-core' ),
 				'label_block' => true,
 			]
 		);
@@ -79,16 +80,16 @@ class Resume_History extends \Elementor\Widget_Base {
 		$repeater->add_control(
 			'description', [
 				'label' => __( 'Description', 'hovard-core' ),
-				'type' => \Elementor\Controls_Manager::TEXTAREA,
+				'type'  => \Elementor\Controls_Manager::TEXTAREA,
 			]
 		);
 
 		$this->add_control(
 			'resume_histories',
 			[
-				'label' => __( 'Resume Histories', 'hovard-core' ),
-				'type' => \Elementor\Controls_Manager::REPEATER,
-				'fields' => $repeater->get_controls(),
+				'label'       => __( 'Resume Histories', 'hovard-core' ),
+				'type'        => \Elementor\Controls_Manager::REPEATER,
+				'fields'      => $repeater->get_controls(),
 				'title_field' => '{{{ designation }}}',
 			]
 		);
@@ -101,14 +102,14 @@ class Resume_History extends \Elementor\Widget_Base {
 		$this->start_controls_section(
 			'style_content_sec', [
 				'label' => __( 'Style History', 'hovard-core' ),
-				'tab' => Controls_Manager::TAB_STYLE,
+				'tab'   => Controls_Manager::TAB_STYLE,
 			]
 		);
 
 		$this->add_control(
 			'institution_color', [
-				'label' => __( 'Company / Institution Text Color', 'hovard-core' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => __( 'Company / Institution Text Color', 'hovard-core' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .institution' => 'color: {{VALUE}};',
 				],
@@ -117,8 +118,8 @@ class Resume_History extends \Elementor\Widget_Base {
 
 		$this->add_group_control(
 			Group_Control_Typography::get_type(), [
-				'name' => 'institution_typography',
-				'scheme' => Typography::TYPOGRAPHY_1,
+				'name'     => 'institution_typography',
+				'scheme'   => Typography::TYPOGRAPHY_1,
 				'selector' => '
                     {{WRAPPER}} .institution,
                 ',
@@ -127,8 +128,8 @@ class Resume_History extends \Elementor\Widget_Base {
 
 		$this->add_control(
 			'st_en_year_color', [
-				'label' => __( 'Start and end Year Color', 'hovard-core' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => __( 'Start and end Year Color', 'hovard-core' ),
+				'type'      => Controls_Manager::COLOR,
 				'separator' => 'before',
 				'selectors' => [
 					'{{WRAPPER}} .st-en-year' => 'color: {{VALUE}};',
@@ -138,8 +139,8 @@ class Resume_History extends \Elementor\Widget_Base {
 
 		$this->add_group_control(
 			Group_Control_Typography::get_type(), [
-				'name' => 'st_en_year_typography',
-				'scheme' => Typography::TYPOGRAPHY_1,
+				'name'     => 'st_en_year_typography',
+				'scheme'   => Typography::TYPOGRAPHY_1,
 				'selector' => '
                     {{WRAPPER}} .st-en-year,
                 ',
@@ -148,8 +149,8 @@ class Resume_History extends \Elementor\Widget_Base {
 
 		$this->add_control(
 			'designation_color', [
-				'label' => __( 'Course / Designation Color', 'hovard-core' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => __( 'Course / Designation Color', 'hovard-core' ),
+				'type'      => Controls_Manager::COLOR,
 				'separator' => 'before',
 				'selectors' => [
 					'{{WRAPPER}} .designation' => 'color: {{VALUE}};',
@@ -159,8 +160,8 @@ class Resume_History extends \Elementor\Widget_Base {
 
 		$this->add_group_control(
 			Group_Control_Typography::get_type(), [
-				'name' => 'typography_designation',
-				'scheme' => Typography::TYPOGRAPHY_1,
+				'name'     => 'typography_designation',
+				'scheme'   => Typography::TYPOGRAPHY_1,
 				'selector' => '
                     {{WRAPPER}} .designation,
                 ',
@@ -168,8 +169,8 @@ class Resume_History extends \Elementor\Widget_Base {
 		);
 		$this->add_control(
 			'description_color', [
-				'label' => __( 'Description Color', 'hovard-core' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => __( 'Description Color', 'hovard-core' ),
+				'type'      => Controls_Manager::COLOR,
 				'separator' => 'before',
 				'selectors' => [
 					'{{WRAPPER}} .description' => 'color: {{VALUE}};',
@@ -179,8 +180,8 @@ class Resume_History extends \Elementor\Widget_Base {
 
 		$this->add_group_control(
 			Group_Control_Typography::get_type(), [
-				'name' => 'description_typography',
-				'scheme' => Typography::TYPOGRAPHY_1,
+				'name'     => 'description_typography',
+				'scheme'   => Typography::TYPOGRAPHY_1,
 				'selector' => '
                     {{WRAPPER}} .description,
                 ',
@@ -195,14 +196,14 @@ class Resume_History extends \Elementor\Widget_Base {
 		$this->start_controls_section(
 			'style_bar', [
 				'label' => __( 'Bar Style', 'hovard-core' ),
-				'tab' => Controls_Manager::TAB_STYLE,
+				'tab'   => Controls_Manager::TAB_STYLE,
 			]
 		);
 
 		$this->add_control(
 			'bar_color', [
-				'label' => __( 'History Bar Color', 'hovard-core' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => __( 'History Bar Color', 'hovard-core' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .history-bar:before' => 'background: {{VALUE}};',
 				],
@@ -211,8 +212,8 @@ class Resume_History extends \Elementor\Widget_Base {
 
 		$this->add_control(
 			'circle_color', [
-				'label' => __( 'Circle Color', 'hovard-core' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => __( 'Circle Color', 'hovard-core' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .circle' => 'border-color: {{VALUE}};',
 				],
@@ -225,10 +226,10 @@ class Resume_History extends \Elementor\Widget_Base {
 	}
 
 	protected function render() {
-		$settings = $this->get_settings_for_display();
-		$resume_histories = !empty( $settings['resume_histories'] ) ? $settings['resume_histories'] : '';
+		$settings         = $this->get_settings_for_display();
+		$resume_histories = ! empty( $settings['resume_histories'] ) ? $settings['resume_histories'] : '';
 
 		// Include Part
-		include("inc/resume/resume-history.php");
+		include( "inc/resume/resume-history.php" );
 	}
 }

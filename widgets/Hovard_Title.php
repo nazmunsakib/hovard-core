@@ -1,4 +1,5 @@
 <?php
+
 namespace HovardCore\Widgets;
 
 use Elementor\Widget_Base;
@@ -49,8 +50,8 @@ class Hovard_Title extends Widget_Base {
 		$this->add_control(
 			'title',
 			[
-				'label' => __( 'Title', 'hovard-core' ),
-				'type' => Controls_Manager::TEXT,
+				'label'       => __( 'Title', 'hovard-core' ),
+				'type'        => Controls_Manager::TEXT,
 				'label_block' => true,
 			]
 		);
@@ -64,14 +65,14 @@ class Hovard_Title extends Widget_Base {
 			'section_title_style',
 			[
 				'label' => __( 'Style Title', 'hovard-core' ),
-				'tab' => Controls_Manager::TAB_STYLE,
+				'tab'   => Controls_Manager::TAB_STYLE,
 			]
 		);
 
 		$this->add_control(
 			'color_title', [
-				'label' => esc_html__( 'Text Color', 'hovard-core' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => esc_html__( 'Text Color', 'hovard-core' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .section-title' => 'color: {{VALUE}};',
 				],
@@ -80,9 +81,9 @@ class Hovard_Title extends Widget_Base {
 
 		$this->add_group_control(
 			Group_Control_Typography::get_type(), [
-				'name' => 'typography_title',
-				'label' => esc_html__( 'Typography', 'hovard-core' ),
-				'scheme' => Typography::TYPOGRAPHY_1,
+				'name'     => 'typography_title',
+				'label'    => esc_html__( 'Typography', 'hovard-core' ),
+				'scheme'   => Typography::TYPOGRAPHY_1,
 				'selector' => '{{WRAPPER}} .section-title',
 			]
 		);
@@ -101,19 +102,19 @@ class Hovard_Title extends Widget_Base {
 	 */
 	protected function render() {
 		$settings = $this->get_settings();
-        $title = '';
-        if (!empty($settings['title'])){
-	        $title = $settings['title'];
-        }
+		$title    = '';
+		if ( ! empty( $settings['title'] ) ) {
+			$title = $settings['title'];
+		}
 
 		?>
-			<div class="pt-17.5" x-data="{ sectionTitle: '<?php echo esc_html($title); ?>'}">
-				<h2
-					class="section-title font-ibmplexmono font-medium text-subtitle2 text-sienna tracking-l1 mb-2.5 pl-12.5 relative before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-7.5 before:h-0.5 before:bg-oceangreen before:inline-block"
-					x-text="sectionTitle"
-					x-intersect="$el.classList.add('animate__animated', 'animate__fadeInUp')"
-				></h2>
-			</div>
+        <div x-data="{ sectionTitle: '<?php echo esc_html( $title ); ?>'}">
+            <h2
+                    class="section-title font-ibmplexmono font-medium text-subtitle2 text-sienna tracking-l1 mb-2.5 pl-12.5 relative before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-7.5 before:h-0.5 before:bg-oceangreen before:inline-block dark:before:bg-sienna animate__animated animate__fadeInUp"
+                    x-text="sectionTitle"
+                    x-intersect="$el.classList.add('animate__animated', 'animate__fadeInUp')"
+            ></h2>
+        </div>
 		<?php
 	}
 }

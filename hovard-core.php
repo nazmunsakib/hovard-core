@@ -147,8 +147,6 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 			require_once __DIR__ . '/inc/extra.php';
 			require_once __DIR__ . '/post-type/portfolio.pt.php';
 			require_once __DIR__ . '/post-type/acf_meta.php';
-			// Gutenberg Blocks
-			require_once __DIR__ . '/blocks/_blocks.php';
 
 			/**
 			 * Register widget area.
@@ -159,17 +157,6 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 
 			// Elementor custom field icons
 			require_once __DIR__ . '/inc/icons.php';
-
-			// RGBA color picker
-			require plugin_dir_path( __FILE__ ) . '/inc/acf-rgba/acf-rgba-color-picker.php';
-
-			// Shortcodes
-			require_once __DIR__ . '/shortcodes/reference.php';
-			require_once __DIR__ . '/shortcodes/code.php';
-			require_once __DIR__ . '/shortcodes/direction.php';
-			require_once __DIR__ . '/shortcodes/tooltip.php';
-			require_once __DIR__ . '/shortcodes/conditional_data.php';
-			require_once __DIR__ . '/shortcodes/tags.php';
 		}
 
 		/**
@@ -347,10 +334,7 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 		 * @access public
 		 */
 		public function register_widget_scripts() {
-
 			wp_register_script( 'my_loadmore', plugins_url( 'assets/js/myloadmore.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
-			wp_register_script( 'slick', plugins_url( 'assets/vendors/slick/slick.min.js', __FILE__ ), array( 'jquery' ), '1.9.0', true );
-			wp_register_script( 'wow', plugins_url( 'assets/vendors/wow/wow.min.js', __FILE__ ), array( 'jquery' ), '1.9.0', true );
 		}
 
 		public function enqueue_elementor_editor_styles() {
@@ -362,8 +346,8 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 			wp_deregister_style( 'e-animations' );
 
 			wp_localize_script( 'my_loadmore', 'hovard_loadmore_params', array(
-				'ajaxurl' => admin_url('admin-ajax.php'),
-				'current_page' => get_query_var( 'paged' ) ? get_query_var('paged') : 1,
+				'ajaxurl'      => admin_url( 'admin-ajax.php' ),
+				'current_page' => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
 			) );
 		}
 
@@ -448,6 +432,8 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 			require_once __DIR__ . '/widgets/Resume_History.php';
 			require_once __DIR__ . '/widgets/Portfolios.php';
 			require_once __DIR__ . '/widgets/Article.php';
+			require_once __DIR__ . '/widgets/Working_Process.php';
+			require_once __DIR__ . '/widgets/Pricing_Table.php';
 		}
 
 		/**
@@ -467,6 +453,8 @@ if ( ! class_exists( 'Hovard_core' ) ) {
 				'Resume_History',
 				'Portfolios',
 				'Article',
+				'Working_Process',
+				'Pricing_Table',
 			];
 
 
@@ -507,64 +495,64 @@ function hovard_admin_cpt_script( $hook ) {
 
 add_action( 'admin_enqueue_scripts', 'hovard_admin_cpt_script', 10, 1 );
 
+add_image_size("hovard_core_845x830", 845, 830, true);
 
 
-function hovard_loadmore_ajax_handler(){
+function hovard_loadmore_ajax_handler() {
 
-            $posts_args = new WP_Query( array(
-                'post_type'      => 'post',
-                'order'          => 'DESC',
-                'posts_per_page' => -1,
-                'paged' =>  max( 1, get_query_var('paged') ) + 1,
-            ) );
+	$posts_args = new WP_Query( array(
+		'post_type'      => 'post',
+		'order'          => 'DESC',
+		'posts_per_page' => - 1,
+		'paged'          => max( 1, get_query_var( 'paged' ) ) + 1,
+	) );
 
-            while ( $posts_args->have_posts() ): $posts_args->the_post();
-	            $categories = get_the_category(get_the_ID());
-	            $category_list = join( ', ', wp_list_pluck( $categories, 'name' ) );
-            ?>
+	while ( $posts_args->have_posts() ): $posts_args->the_post();
+		$categories    = get_the_category( get_the_ID() );
+		$category_list = join( ', ', wp_list_pluck( $categories, 'name' ) );
+		?>
+        <!-- Blog item -->
+        <div <?php echo post_class( "md:col-span-1 col-span-2 relative z-10 pt-5" ); ?> >
 
-			<!-- Blog item -->
-			<div <?php echo post_class("col-span-1 relative z-10 pt-5"); ?> >
+            <a href="<?php get_the_permalink(); ?>"
+               class="hbcat-list absolute top-0 left-6 inline-block bg-oceangreen font-ibmplexmono font-medium text-para3 text-white rounded-[3px] py-1.5 px-2.5">
+				<?php echo wp_kses_post( $category_list ); ?>
+            </a>
+            <a href=" <?php the_permalink(); ?>">
+				<?php the_post_thumbnail( 'hovard-box', [ "class" => "rounded-md" ] ); ?>
+            </a>
+            <div class="bg-white shadow-custom3 rounded-md mx-5 -mt-12.5 relative z-10 xl:px-7.5 px-5 xl:py-6 py-3.5">
 
-				<a href="<?php get_the_permalink(); ?>"
-					class="hbcat-list absolute top-0 left-6 inline-block bg-oceangreen font-ibmplexmono font-medium text-para3 text-white rounded-[3px] py-1.5 px-2.5" >
-                    <?php echo wp_kses_post( $category_list ); ?>
-                </a>
-				<a @click.prevent="page = 'blog-single'" href=" <?php the_permalink(); ?>">
-                    <?php the_post_thumbnail( 'hovard-box', [ "class" => "rounded-md" ] ); ?>
-				</a>
-				<div class="bg-white shadow-custom3 rounded-md mx-5 -mt-12.5 relative z-10 px-7.5 py-6">
+                <ul class="flex xl:flex-row flex-col gap-0 xl:gap-6">
+                    <li class="flex items-center font-ibmplexmono font-normal xl:text-para4 text-para text-emperor">
+                        <a href="#"><i class="ti-user text-sienna mr-2.5"></i><?php the_author_link(); ?></a>
+                    </li>
+                    <li class="flex items-center font-ibmplexmono font-normal xl:text-para4 text-para text-emperor"><i
+                                class="ti-calendar text-sienna mr-2.5"></i> <?php echo esc_html( get_the_date( 'F j, Y' ) ); ?>
+                    </li>
+                </ul>
 
-					<ul class="flex gap-6">
-						<li class="flex items-center font-ibmplexmono font-normal text-para4 text-emperor">
-							<a href="#"><i class="ti-user text-sienna mr-2.5"></i><?php the_author_link(); ?></a>
-						</li>
-						<li class="flex items-center font-ibmplexmono font-normal text-para4 text-emperor"><i class="ti-calendar text-sienna mr-2.5"></i> <?php echo esc_html( get_the_date('F j, Y') ); ?></li>
-					</ul>
+                <h4 class="article-title font-rufina font-bold text-title10 text-shaft duration-300 ease-in-out mt-2.5 hover:text-oceangreen">
+                    <a href="<?php the_permalink(); ?>"> <?php the_title(); ?> </a>
+                </h4>
 
-					<h4 class="article-title font-rufina font-bold text-title10 text-shaft duration-300 ease-in-out mt-2.5 hover:text-oceangreen">
-						<a @click.prevent="page = 'blog-single'" href="<?php the_permalink(); ?>"> <?php the_title(); ?> </a>
-					</h4>
-
-				</div>
-			</div>
-
-            <?php
-            endwhile;
-			if (  $posts_args->max_num_pages > 1 ):
-			?>
-
-			<div class="col-span-2 text-center pt-2.5">
-				<a class="loade_more_btn font-ibmplexmono font-medium text-subtitle2 text-white bg-oceangreen rounded-sm2 inline-block py-3.5 px-13.5" href="#">Load More</a>
-			</div>
-
-			<?php
-			endif;
-			die;
-
+            </div>
+        </div>
+	<?php
+	endwhile;
+	if ( $posts_args->max_num_pages > 1 ):
+		?>
+        <div class="col-span-2 text-center pt-2.5">
+            <a class="loade_more_btn font-ibmplexmono font-medium text-subtitle2 text-white bg-oceangreen hover:bg-sienna transition-all duration-300 rounded-sm2 inline-block py-2.5 xl:py-3.5 px-8.5 xl:px-13.5"
+               href="#"><?php echo esc_html( 'Load More', 'hovard-core' ); ?></a>
+        </div>
+	<?php
+	endif;
+	die;
 }
-add_action('wp_ajax_loadmore', 'hovard_loadmore_ajax_handler');
-add_action('wp_ajax_nopriv_loadmore', 'hovard_loadmore_ajax_handler');
+
+add_action( 'wp_ajax_loadmore', 'hovard_loadmore_ajax_handler' );
+add_action( 'wp_ajax_nopriv_loadmore', 'hovard_loadmore_ajax_handler' );
 
 
 

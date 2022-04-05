@@ -1,4 +1,5 @@
 <?php
+
 namespace HovardCore\Widgets;
 
 use Elementor\Widget_Base;
@@ -36,46 +37,35 @@ class Portfolios extends \Elementor\Widget_Base {
 	}
 
 	public function get_keywords() {
-		['portfolio', 'project'];
+		[ 'portfolio', 'project' ];
 	}
 
 	protected function register_controls() {
 
 		// ------------------------------ Portfolios ------------------------------ //
 		$this->start_controls_section(
-			'testimonials_sec', [
+			'portfolios_sec', [
 				'label' => __( 'Portfolios', 'hovard-core' ),
-			]
-		);
-
-		$repeater = new \Elementor\Repeater();
-
-		$repeater->add_control(
-			'project_id', [
-				'label' => __('Select Project', 'hovard-core'),
-				'type' => \Elementor\Controls_Manager::SELECT,
-				'options' => hovard_get_posts('portfolio')
-			]
-		);
-
-		$repeater->add_control(
-			'image_size', [
-				'label' => __('Select Image Type', 'hovard-core'),
-				'type' => \Elementor\Controls_Manager::SELECT,
-				'options' => [
-					'6' => 'Big',
-					'3' => 'Small'
-				],
-				'default' => '3'
 			]
 		);
 
 		$this->add_control(
-			'portfolios', [
-				'label' => __( 'Portfolios', 'hovard-core' ),
-				'type' => \Elementor\Controls_Manager::REPEATER,
-				'fields' => $repeater->get_controls(),
-				'title_field' => '',
+			'style', [
+				'label'   => __( 'Portfolios Style', 'hovard-core' ),
+				'type'    => \Elementor\Controls_Manager::SELECT,
+				'options' => [
+					'1' => esc_html__( 'Justified', 'hovard-core' ),
+					'2' => esc_html__( 'Grid Layout', 'hovard-core' ),
+				],
+				'default' => '1'
+			]
+		);
+
+		$this->add_control(
+			'posts_per_query', [
+				'label'   => __( 'Portfolios Per Query', 'hovard-core' ),
+				'type'    => \Elementor\Controls_Manager::NUMBER,
+				'default' => 6,
 			]
 		);
 
@@ -87,14 +77,14 @@ class Portfolios extends \Elementor\Widget_Base {
 		$this->start_controls_section(
 			'style_portfolio_btn', [
 				'label' => __( 'Style Filter BUtton', 'hovard-core' ),
-				'tab' => Controls_Manager::TAB_STYLE,
+				'tab'   => Controls_Manager::TAB_STYLE,
 			]
 		);
 
 		$this->add_control(
 			'pbtn_text_color', [
-				'label' => __( 'Button Text Color', 'hovard-core' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => __( 'Button Text Color', 'hovard-core' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .p-tab-btn .button' => 'color: {{VALUE}};',
 				],
@@ -103,8 +93,8 @@ class Portfolios extends \Elementor\Widget_Base {
 
 		$this->add_control(
 			'pbtn_bg_color', [
-				'label' => __( 'Button Background', 'hovard-core' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => __( 'Button Background', 'hovard-core' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .p-tab-btn .button' => 'background: {{VALUE}};',
 				],
@@ -113,8 +103,8 @@ class Portfolios extends \Elementor\Widget_Base {
 
 		$this->add_group_control(
 			Group_Control_Typography::get_type(), [
-				'name' => 'pbtn_typography',
-				'scheme' => Typography::TYPOGRAPHY_1,
+				'name'     => 'pbtn_typography',
+				'scheme'   => Typography::TYPOGRAPHY_1,
 				'selector' => '
                     {{WRAPPER}} .p-tab-btn .button,
                 ',
@@ -129,14 +119,14 @@ class Portfolios extends \Elementor\Widget_Base {
 		$this->start_controls_section(
 			'style_portfolio_content', [
 				'label' => __( 'Style Content', 'hovard-core' ),
-				'tab' => Controls_Manager::TAB_STYLE,
+				'tab'   => Controls_Manager::TAB_STYLE,
 			]
 		);
 
 		$this->add_control(
 			'title_color', [
-				'label' => __( 'Title Color', 'hovard-core' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => __( 'Title Color', 'hovard-core' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .project-item h4' => 'color: {{VALUE}};',
 				],
@@ -145,8 +135,8 @@ class Portfolios extends \Elementor\Widget_Base {
 
 		$this->add_group_control(
 			Group_Control_Typography::get_type(), [
-				'name' => 'title_typography',
-				'scheme' => Typography::TYPOGRAPHY_1,
+				'name'     => 'title_typography',
+				'scheme'   => Typography::TYPOGRAPHY_1,
 				'selector' => '
                     {{WRAPPER}} .project-item h4,
                 ',
@@ -155,8 +145,8 @@ class Portfolios extends \Elementor\Widget_Base {
 
 		$this->add_control(
 			'cat_color', [
-				'label' => __( 'Category name color', 'hovard-core' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => __( 'Category name color', 'hovard-core' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .project-item p' => 'color: {{VALUE}};',
 				],
@@ -165,8 +155,8 @@ class Portfolios extends \Elementor\Widget_Base {
 
 		$this->add_group_control(
 			Group_Control_Typography::get_type(), [
-				'name' => 'cat_typography',
-				'scheme' => Typography::TYPOGRAPHY_1,
+				'name'     => 'cat_typography',
+				'scheme'   => Typography::TYPOGRAPHY_1,
 				'selector' => '
                     {{WRAPPER}} .project-item p,
                 ',
@@ -178,10 +168,9 @@ class Portfolios extends \Elementor\Widget_Base {
 	}
 
 	protected function render() {
-		$settings = $this->get_settings_for_display();
-		$portfolios = !empty( $settings['portfolios'] ) ? $settings['portfolios'] : '';
+		$settings = $this->get_settings();
 
 		// Include Part
-		include("inc/portfolio/portfolio-1.php");
+		include( "inc/portfolio/portfolio-{$settings['style']}.php" );
 	}
 }

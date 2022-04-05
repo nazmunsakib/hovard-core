@@ -13,25 +13,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Section_Title
+ * Class Working_Process
  * @package HovardCore\Widgets
  */
-class Section_Title extends Widget_Base {
+class Working_Process extends Widget_Base {
 
 	public function get_name() {
-		return 'section_title';
+		return 'working-process';
 	}
 
 	public function get_title() {
-		return __( 'Section Title', 'hovard-core' );
+		return __( 'Working Process', 'hovard-core' );
 	}
 
 	public function get_icon() {
-		return 'eicon-site-title';
+		return ' eicon-order-end';
 	}
 
 	public function get_keywords() {
-		return [ 'hovard', 'title' ];
+		return [ 'working', 'process', 'title', 'history' ];
 	}
 
 	public function get_categories() {
@@ -41,25 +41,45 @@ class Section_Title extends Widget_Base {
 	protected function register_controls() {
 
 		$this->start_controls_section(
-			'hovard_title',
+			'working_process',
 			[
-				'label' => __( 'Section Title', 'hovard-core' ),
+				'label' => __( 'Working Process', 'hovard-core' ),
 			]
 		);
 
 		$this->add_control(
-			'title',
+			'wp_icon',
+			[
+				'label'       => __( 'Icon', 'hovard-core' ),
+				'type'        => Controls_Manager::MEDIA,
+				'label_block' => true,
+			]
+		);
+
+		$this->add_control(
+			'wp_title',
 			[
 				'label'       => __( 'Title', 'hovard-core' ),
 				'type'        => Controls_Manager::TEXT,
 				'label_block' => true,
+				'default'     => __( 'Research', 'hovard-core' )
+			]
+		);
+
+		$this->add_control(
+			'wp_desc',
+			[
+				'label'       => __( 'Description', 'hovard-core' ),
+				'type'        => Controls_Manager::TEXTAREA,
+				'label_block' => true,
+				'default'     => __( 'Heaven greater fish Midst fly us green over beginning make.', 'hovard-core' )
 			]
 		);
 
 		$this->end_controls_section();
 
 		/**
-		 *  Style Title
+		 *  Style Working Process
 		 */
 		$this->start_controls_section(
 			'section_title_style',
@@ -70,11 +90,11 @@ class Section_Title extends Widget_Base {
 		);
 
 		$this->add_control(
-			'color_title', [
-				'label'     => esc_html__( 'Text Color', 'hovard-core' ),
+			'color_wp_title', [
+				'label'     => esc_html__( 'Title color', 'hovard-core' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .hovard-section-title' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .workp-title' => 'color: {{VALUE}};',
 				],
 			]
 		);
@@ -84,27 +104,26 @@ class Section_Title extends Widget_Base {
 				'name'     => 'typography_title',
 				'label'    => esc_html__( 'Typography', 'hovard-core' ),
 				'scheme'   => Typography::TYPOGRAPHY_1,
-				'selector' => '{{WRAPPER}} .hovard-section-title',
+				'selector' => '{{WRAPPER}} .workp-title',
 			]
 		);
 
 		$this->add_control(
-			'bottom_shape_color', [
-				'label'     => esc_html__( 'Bottom shape Color', 'hovard-core' ),
+			'color_wp_desc', [
+				'label'     => esc_html__( 'Description color', 'hovard-core' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .section-btm-shape' => 'background: {{VALUE}};',
+					'{{WRAPPER}} .workp-title' => 'color: {{VALUE}};',
 				],
 			]
 		);
 
-		$this->add_control(
-			'bottom_border_color', [
-				'label'     => esc_html__( 'Bottom Border Color', 'hovard-core' ),
-				'type'      => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .section-btm-border' => 'background: {{VALUE}};',
-				],
+		$this->add_group_control(
+			Group_Control_Typography::get_type(), [
+				'name'     => 'typography_desc',
+				'label'    => esc_html__( 'Typography', 'hovard-core' ),
+				'scheme'   => Typography::TYPOGRAPHY_1,
+				'selector' => '{{WRAPPER}} .workp-desc',
 			]
 		);
 
@@ -122,15 +141,8 @@ class Section_Title extends Widget_Base {
 	 */
 	protected function render() {
 		$settings = $this->get_settings();
-		if ( ! empty( $settings['title'] ) ) {
 
-			?>
-            <h4 class="hovard-section-title font-rufina font-bold text-title7 text-shaft mb-2 dark:text-white"><?php echo esc_html( $settings['title'] ); ?></h4>
-
-            <div class="section-btm-border bg-iron h-0.5 relative mb-9">
-                <span class="section-btm-shape bg-oceangreen w-15 h-1 absolute left-0 top-1/2 -translate-y-1/2"></span>
-            </div>
-			<?php
-		}
+		// Include Part
+		include( "inc/working-process/working-process.php" );
 	}
 }

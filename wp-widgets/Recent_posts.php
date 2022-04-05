@@ -1,5 +1,7 @@
 <?php
+
 namespace HovardCore\WpWidgets;
+
 use WP_Widget;
 use WP_Query;
 
@@ -27,8 +29,8 @@ class Recent_Posts extends WP_Widget {
 	 */
 	public function __construct() {
 		$widget_ops = array(
-			'classname' => 'recent_news_widget',
-			'description' => esc_html__( 'Your sit  e&#8217;s most recent Posts.', 'hovard' ),
+			'classname'                   => 'recent_news_widget',
+			'description'                 => esc_html__( 'Your sit  e&#8217;s most recent Posts.', 'hovard' ),
 			'customize_selective_refresh' => true,
 		);
 		parent::__construct( 'recent-posts', esc_html__( '(Hovard) Recent Posts', 'hovard' ), $widget_ops );
@@ -38,11 +40,12 @@ class Recent_Posts extends WP_Widget {
 	/**
 	 * Outputs the content for the current Recent Posts widget instance.
 	 *
-	 * @since 2.8.0
-	 *
-	 * @param array $args     Display arguments including 'before_title', 'after_title',
+	 * @param array $args Display arguments including 'before_title', 'after_title',
 	 *                        'before_widget', and 'after_widget'.
 	 * @param array $instance Settings for the current Recent Posts widget instance.
+	 *
+	 * @since 2.8.0
+	 *
 	 */
 	public function widget( $args, $instance ) {
 		if ( ! isset( $args['widget_id'] ) ) {
@@ -64,15 +67,16 @@ class Recent_Posts extends WP_Widget {
 		/**
 		 * Filters the arguments for the Recent Posts widget.
 		 *
-		 * @since 3.4.0
-		 * @since 4.9.0 Added the `$instance` parameter.
+		 * @param array $args An array of arguments used to retrieve the recent posts.
+		 * @param array $instance Array of settings for the current widget.
 		 *
 		 * @see WP_Query::get_posts()
 		 *
-		 * @param array $args     An array of arguments used to retrieve the recent posts.
-		 * @param array $instance Array of settings for the current widget.
+		 * @since 3.4.0
+		 * @since 4.9.0 Added the `$instance` parameter.
+		 *
 		 */
-		$r = new WP_Query( apply_filters( 'widget_posts_args', array(
+		$r                = new WP_Query( apply_filters( 'widget_posts_args', array(
 			'posts_per_page'      => $number,
 			'no_found_rows'       => true,
 			'post_status'         => 'publish',
@@ -90,34 +94,35 @@ class Recent_Posts extends WP_Widget {
 		}
 
 		foreach ( $r->posts as $recent_post ) :
-            $post_title = get_the_title( $recent_post->ID );
-            $title      = ( ! empty( $post_title ) ) ? $post_title : esc_html__( '(no title)', 'hovard' );
-            $title_length = function_exists('get_field') ? get_field( 'title_length',  'widget_'.$args['widget_id']) : 24;
-            if ( !isset($title_length) ) {
-                $title_length = 40;
-            }
-            ?>
-            <div <?php post_class( 'media d-flex recent_post_item') ?>>
+			$post_title = get_the_title( $recent_post->ID );
+			$title        = ( ! empty( $post_title ) ) ? $post_title : esc_html__( '(no title)', 'hovard' );
+			$title_length = function_exists( 'get_field' ) ? get_field( 'title_length', 'widget_' . $args['widget_id'] ) : 24;
+			if ( ! isset( $title_length ) ) {
+				$title_length = 40;
+			}
+			?>
+            <div <?php post_class( 'media d-flex recent_post_item' ) ?>>
                 <a href="<?php the_permalink( $recent_post->ID ); ?>" class="thumbnail">
-                    <?php
-                    if ( has_post_thumbnail($recent_post->ID) ) {
-                        echo get_the_post_thumbnail( $recent_post->ID, 'hovard_70x70', array( 'class' => 'media-object' ) );
-                    }
-                    ?>
+					<?php
+					if ( has_post_thumbnail( $recent_post->ID ) ) {
+						echo get_the_post_thumbnail( $recent_post->ID, 'hovard_70x70', array( 'class' => 'media-object' ) );
+					}
+					?>
                 </a>
                 <div class="media-body">
-                    <a class="entry_post_date" href="<?php the_permalink( $recent_post->ID ); ?>" title="<?php echo esc_attr($title); ?>">
-                        <h5> <?php hovard_core_limit_latter($title, $title_length, ''); ?> </h5>
+                    <a class="entry_post_date" href="<?php the_permalink( $recent_post->ID ); ?>"
+                       title="<?php echo esc_attr( $title ); ?>">
+                        <h5> <?php hovard_core_limit_latter( $title, $title_length, '' ); ?> </h5>
                     </a>
-                    <?php
-                    if ( $show_date ) : ?>
+					<?php
+					if ( $show_date ) : ?>
                         <a class="entry_post_date" href="<?php hovardcore_day_link() ?>">
-                            <?php echo get_the_date( get_option( 'date_format'), $recent_post->ID ); ?>
+							<?php echo get_the_date( get_option( 'date_format' ), $recent_post->ID ); ?>
                         </a>
-                    <?php endif; ?>
+					<?php endif; ?>
                 </div>
             </div>
-        <?php endforeach; ?>
+		<?php endforeach; ?>
 
 		<?php
 		echo $args['after_widget'];
@@ -126,42 +131,54 @@ class Recent_Posts extends WP_Widget {
 	/**
 	 * Outputs the settings form for the Recent Posts widget.
 	 *
+	 * @param array $instance Current settings.
+	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $instance Current settings.
 	 */
 	public function form( $instance ) {
-		$title          = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
-		$number         = isset( $instance['number'] ) ? absint( $instance['number'] ) : 5;
-		$length   = isset( $instance['length'] ) ? absint( $instance['length'] ) : 24;
-		$show_date      = isset( $instance['show_date'] ) ? (bool) $instance['show_date'] : true;
-        ?>
-		<p><label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>"><?php esc_html_e( 'Title:', 'hovard' ); ?></label>
-		<input class="widefat" id="<?php echo esc_attr($this->get_field_id( 'title' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'title' )); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></p>
+		$title     = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
+		$number    = isset( $instance['number'] ) ? absint( $instance['number'] ) : 5;
+		$length    = isset( $instance['length'] ) ? absint( $instance['length'] ) : 24;
+		$show_date = isset( $instance['show_date'] ) ? (bool) $instance['show_date'] : true;
+		?>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_html_e( 'Title:', 'hovard' ); ?></label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
+                   name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text"
+                   value="<?php echo esc_attr( $title ); ?>"/></p>
 
-		<p><label for="<?php echo esc_attr($this->get_field_id( 'number' )); ?>"><?php esc_html_e( 'Number of Posts to Show:', 'hovard' ); ?></label>
-		<input class="tiny-text" id="<?php echo esc_attr($this->get_field_id( 'number' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'number' )); ?>" type="number" step="1" min="1" value="<?php echo esc_attr($number); ?>" size="4" /></p>
+        <p>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>"><?php esc_html_e( 'Number of Posts to Show:', 'hovard' ); ?></label>
+            <input class="tiny-text" id="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>"
+                   name="<?php echo esc_attr( $this->get_field_name( 'number' ) ); ?>" type="number" step="1" min="1"
+                   value="<?php echo esc_attr( $number ); ?>" size="4"/></p>
 
-        <p><input class="checkbox" type="checkbox"<?php esc_attr(checked( $show_date )); ?> id="<?php echo esc_attr($this->get_field_id( 'show_date' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'show_date' )); ?>" />
-            <label for="<?php echo esc_attr($this->get_field_id( 'show_date' )); ?>"><?php esc_html_e( 'Display Post Date?', 'hovard' ); ?></label></p>
-        <?php
+        <p><input class="checkbox" type="checkbox"<?php esc_attr( checked( $show_date ) ); ?>
+                  id="<?php echo esc_attr( $this->get_field_id( 'show_date' ) ); ?>"
+                  name="<?php echo esc_attr( $this->get_field_name( 'show_date' ) ); ?>"/>
+            <label for="<?php echo esc_attr( $this->get_field_id( 'show_date' ) ); ?>"><?php esc_html_e( 'Display Post Date?', 'hovard' ); ?></label>
+        </p>
+		<?php
 	}
 
-    /**
-     * Handles updating the settings for the current Recent Posts widget instance.
-     *
-     * @since 2.8.0
-     *
-     * @param array $new_instance New settings for this instance as input by the user via
-     *                            WP_Widget::form().
-     * @param array $old_instance Old settings for this instance.
-     * @return array Updated settings to save.
-     */
-    public function update( $new_instance, $old_instance ) {
-        $instance = $old_instance;
-        $instance['title'] = sanitize_text_field( $new_instance['title'] );
-        $instance['number'] = (int) $new_instance['number'];
-        $instance['show_date'] = isset( $new_instance['show_date'] ) ? (bool) $new_instance['show_date'] : false;
-        return $instance;
-    }
+	/**
+	 * Handles updating the settings for the current Recent Posts widget instance.
+	 *
+	 * @param array $new_instance New settings for this instance as input by the user via
+	 *                            WP_Widget::form().
+	 * @param array $old_instance Old settings for this instance.
+	 *
+	 * @return array Updated settings to save.
+	 * @since 2.8.0
+	 *
+	 */
+	public function update( $new_instance, $old_instance ) {
+		$instance              = $old_instance;
+		$instance['title']     = sanitize_text_field( $new_instance['title'] );
+		$instance['number']    = (int) $new_instance['number'];
+		$instance['show_date'] = isset( $new_instance['show_date'] ) ? (bool) $new_instance['show_date'] : false;
+
+		return $instance;
+	}
 }

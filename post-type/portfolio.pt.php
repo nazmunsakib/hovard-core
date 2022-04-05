@@ -63,7 +63,7 @@ class Portfolio {
 			'has_archive'           => false,
 			'hierarchical'          => true,
 			'menu_position'         => 8,
-			'supports'              => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt'),
+			'supports'              => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'page-attributes'),
 			'yarpp_support'         => true,
 			'menu_icon'             => $this->icon
 		);
